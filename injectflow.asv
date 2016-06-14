@@ -1,0 +1,8 @@
+function injectflow
+
+%function creates a matrix C with dimensions MxNxO
+%M the amount of timesteps, N the number of placesteps and O
+%the number of vessels (IE and SE)
+
+global S
+
