@@ -61,6 +61,9 @@ for i=0:nu-1 %ed: have i and j from 1 to nu, modify i in the calculation of b, d
         end
         %ed: what is happening here? dealing with vertical vessels, rc is
         %tan(slope), 'richtingscoefficient. apparantly defined earlier
+        %har: this is to indicate the area in the opposite side that still
+        %belongs to the same vessel
+        %i.e: left side (1) |vert.vessel| right side (1.01)
         if A(j+1,i+1) > nse %if we are dealing with an internal element
             if abs(S.IE(A(j+1,i+1)-nse).rc) == Inf %ed vertical vessel
                 if x1+i*du < S.IE(A(j+1,i+1)-nse).u(1)
