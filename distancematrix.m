@@ -2,6 +2,10 @@ function A = distancematrix(x1,x2,y1,y2)
 %function makes an u*v matrix to determine which element is closest by
 % in an area with x-coordinates from x1 to x2
 % and y-coordinates from y1 to y2
+% har: I agreed that this code is suboptimal and can further improved, but
+% I can see it'll take a lot of time to adjust the changes throughout the
+% rest of the codes accordingly (esp Marika is still starting to get
+% familiar with debugging process).
 
 equation; %adds directioncoefficient and starting point of each element
 
@@ -14,7 +18,6 @@ nu = 100; %number of points in the u-direction %ed: horizontal; this is number o
 nv = 100; %number of points in the v-direction
 du = (x2-x1)/nu;
 dv = (y2-y1)/nv;
-dcrit(1:n)=0;   %ed: dcrit for each element the distance to the nearest segment; is also in loop and can be kicked out here
 A = ones(nv,nu); %ed: A is the distance matrix, each element indicates which of the main vessels is closest by 
 %ed: index in A is (vertical, horizontal) = (nrow ncolumn)
 % vessel number in A is defined as 1..nse, nse+1..nse+nie, with 3 sources,
@@ -61,10 +64,13 @@ for i=0:nu-1 %ed: have i and j from 1 to nu, modify i in the calculation of b, d
         end
         %ed: what is happening here? dealing with vertical vessels, rc is
         %tan(slope), 'richtingscoefficient. apparantly defined earlier
+        %har: this is to indicate the area in the opposite side that still
+        %belongs to the same vessel
+        %i.e: left side (1) |vert.vessel| right side (1.01)
         if A(j+1,i+1) > nse %if we are dealing with an internal element
             if abs(S.IE(A(j+1,i+1)-nse).rc) == Inf %ed vertical vessel
                 if x1+i*du < S.IE(A(j+1,i+1)-nse).u(1)
-                    A(j+1,i+1) = A(j+1,i+1);%ed:?????
+                    A(j+1,i+1) = A(j+1,i+1);%ed:????? %har: Unnecessary condition
                 else
                     A(j+1,i+1) = A(j+1,i+1)*1.01; %ed: ???? this is an element number, why have the 1.01? looks like a classification trick that is used later
                 end
