@@ -81,6 +81,7 @@ for i=0:nu-1 %ed: have i and j from 1 to nu, modify i in the calculation of b, d
                     A(j+1,i+1) = A(j+1,i+1)*1.01;
                 end
             end
+            
         else %ed: same trick for source elemtns
             if abs(S.SE(A(j+1,i+1)).rc) == Inf
                 if x1+i*du < S.SE(A(j+1,i+1)).u(1)
