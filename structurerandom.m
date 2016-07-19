@@ -2,28 +2,28 @@ function structurerandom(x1,x2,y1,y2)
 
 global S
 
-totalarea = abs(x1-x2)*abs(y1-y2); % total area in mm^2 (testconfiguratie)
+totalarea = abs(x1-x2)*abs(y1-y2); % total area in mm^2 (testconfiguration)
 nie = length(S.IE); %number of interal elements in configuration
 nse = length(S.SE); %number of source elements in configuration
 counterie=1; %counter for every extra internal element made with this algorithm
 a = size(S.matrix);
-nx = a(2); %number of points in the x-direction
-ny = a(1); %number of points in the v-direction
+nx = a(2); %number of points in the x-direction %marika:what does it mean a(2),why is 2?
+ny = a(1); %number of points in the v-direction  %marika:what does it mean a(1),why is 1?
 dx = (x2-x1)/nx;
 dy = (y2-y1)/ny;
 numberofpositions = ny*nx; %number of possible endpoints of terminal segments
 S.density = 1/100; %density of number of terminal segments/mm^2
-radius = 0.4; %radius terminale segmenten in mm
+radius = 0.4; %radius of terminal segments in mm
 % pressure = 20; %pressure in terminal segments in mmHg
 
 for i=1:nse 
     segment=[]; %delete any existing fields from previous simulation
     Aperfusion = (sum(S.matrix(:)==i)/numberofpositions)*totalarea; %area perfused by element in mm^2
-    Nterm = round(Aperfusion*S.density); %number of terminal segments made
-    Ntot = Nterm*2 - 1; %total number of extra segments made
+    Nterm = round(Aperfusion*S.density); %number of terminal segments made     
+    Ntot = Nterm*2 - 1; %total number of extra segments made   %i've understood what he does but i don't understand from where he takes this formula
     
-    segment(1).u(1) = S.SE(i).u(1)+(S.SE(i).v(1)-S.SE(i).u(1))/3; %coordinates of proximal end of first random element
-    segment(1).u(2) = S.SE(i).u(2)+(S.SE(i).v(2)-S.SE(i).u(2))/3; %coordinates of proximal end of first random element
+    segment(1).u(1) = S.SE(i).u(1)+(S.SE(i).v(1)-S.SE(i).u(1))/3; %coordinates of proximal end of first random element 
+    segment(1).u(2) = S.SE(i).u(2)+(S.SE(i).v(2)-S.SE(i).u(2))/3; %coordinates of proximal end of first random element 
     
     %splitting original element and adding extra element and extra node
     if S.SE(i).sourceP == 60 
@@ -48,6 +48,14 @@ for i=1:nse
         %generated for one perfusion area), It's better to consider
         %pre-defined radius of the next element as 1 constant in murray's
         %law
+        
+        %marika: haryadi I cannot see the line that describe the SE
+        %radius's updating ( you told me that our problem is that Murray Law is used on the basis of new SE radius, but i see only that he assign the radius of SE to the nie+counterie). I see that he devides SE in 3 parts and SE's
+        %cordinates are updated,also nie is updated( and their cordinates).
+        %I've understood that the new radius of nie is equal to SE one. 
+     
+        %I've read till this line for now,I continue.
+      
         
     elseif S.SE(i).sourceP == 40
         S.IE(nie+counterie).nodes = [S.SE(i).node S.nin+1];
@@ -642,4 +650,3 @@ end
 
 
 end
-            
