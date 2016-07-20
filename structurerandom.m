@@ -47,14 +47,20 @@ for i=1:nse
         %har: I think instead of using Nterm (number of extra segments
         %generated for one perfusion area), It's better to consider
         %pre-defined radius of the next element as 1 constant in murray's
-        %law
+        %law  
+        
+        %marika: I'm thinking about this: is possible to make the
+        %start of Murray's Law after nie+counterie?i explain better:now it
+        %is nie+counterie.radius= SE(i).radius,S.IE(nie+counterie).radius =
+        %(S.IE(nie+counterie).radius^3 - sum(cubed))^(1/3), if we make
+        %(S.IE(nie+counterie +1).radius^3 - sum(cubed))^(1/3)?
         
     elseif S.SE(i).sourceP == 40
         S.IE(nie+counterie).nodes = [S.SE(i).node S.nin+1];
         S.IE(nie+counterie).u(1) = S.SE(i).u(1);
         S.IE(nie+counterie).u(2) = S.SE(i).u(2);
         S.IE(nie+counterie).v(1) = S.SE(i).u(1)+2*(S.SE(i).v(1)-S.SE(i).u(1))/3; %har: the source element should be splitted at 2/3 element's length
-        S.IE(nie+counterie).v(2) = S.SE(i).u(2)+2*(S.SE(i).v(2)-S.SE(i).u(2))/3; %leaving the final third as new source element
+        S.IE(nie+counterie).v(2) = S.SE(i).u(2)+2*(S.SE(i).v(2)-S.SE(i).u(2))/3; %leaving the final third as new source element ; mar: yes,i'm agree when source P=40, SE will become the third last part of the vessel.
         S.IE(nie+counterie).type = S.SE(i).type;
         S.IE(nie+counterie).length = lengte(S.IE(nie+counterie).u,S.IE(nie+counterie).v);
         S.IE(nie+counterie).radius = S.SE(i).radius;
@@ -70,7 +76,7 @@ for i=1:nse
         cubed=0;
         cubed(1:Nterm) = radius^3;
         S.SE(i).radius = (S.SE(i).radius^3 - sum(cubed))^(1/3);
-        %har: see my note above about murray's law
+        %har: see my note above about murray's law    
         
     end
     counterie=counterie+1;
@@ -79,7 +85,7 @@ for i=1:nse
     %perfusion area
     x=round(rand*nx);
     y=round(rand*ny);
-    while x == 0 || y == 0 || S.matrix(y,x) ~= i
+    while x == 0 || y == 0 || S.matrix(y,x) ~= i      %why is necessary this condition? couldn't be chosen x,y randomly and stop?
         x=round(rand*nx);
         y=round(rand*ny);
     end
@@ -89,11 +95,11 @@ for i=1:nse
     segment(1).node = S.nin+1;
     node = S.nin+1; %remember this node for other side of element
     segment(1).nodes = [];
-    segment(1).parent = nan;
-    segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
+    segment(1).parent = nan;    %what means nan?
+    segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition) %mar: I don't understand very well what is this line
 
-    for k=2:Nterm
-        n=length([segment.ndist]); %number of already existing segments
+    for k=2:Nterm                %marika: is it starting from 2 cause the 1 is segment(1)?
+        n=length([segment.ndist]); %number of already existing segments   %marika:is he calculating the distance between new segment and that one existing already?
 
         %create supporting circle 
         Asupport = (n+1)*Aperfusion/Ntot;
@@ -101,9 +107,9 @@ for i=1:nse
 
         %adding terminal segment - chosing coordinates
         flag = 0;
-        for mp=1:10
-            dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1); %threshold value which favors coordinates with less segments
-            for Ntoss=1:25
+        for mp=1:10 %mar: why from 1:10 ?
+            dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1); %threshold value which favors coordinates with less segments %marika:I don't understand why this formula but I've understood that This process favors regions with low density of existing segments, thus leading to an evenly perfusion of the watershed.
+            for Ntoss=1:25     %mar: why from 1:25 ?
                 x=round(rand*nx);
                 y=round(rand*ny); 
                 while  x == 0 || y == 0 || S.matrix(y,x) ~= i
@@ -122,10 +128,14 @@ for i=1:nse
                 break
             end
         end
+        %marika : i used help flag and i've understood that it is to colour
+        %the different parts of watershet (maybe) but i don't understand very well
+        %how it works,expecially the difference between flag==1 and flag
+        %=1. then, what is exactly success(1)?
         
         segment(n+1).u(1) = segment(succes(2)).u(1);
         segment(n+1).u(2) = segment(succes(2)).u(2);
-        segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
+        segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2; % I've understood that here new choosen coordinates allow me to lay new point found(through these coordinates) to the middle of the previus segment but i continue to not understand what means success(2) like before with success(1)
         segment(n+1).v(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
         segment(n+1).length = segment(succes(2)).length/2;
         if length(segment(succes(2)).nodes) == 2
@@ -642,4 +652,3 @@ end
 
 
 end
-            
