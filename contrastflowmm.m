@@ -59,7 +59,7 @@ S.fluidviscosity = 0.00001;  % fluid viscosity of blood
 % elements and this could cause the hanging. 
 
 S.matrix = distancematrix(0,100,0,502); 
-structurerandomfunction(0,100,0,502); 
+structurerandom(0,100,0,502); 
 
 S.nie=length(S.IE); % number of internal elements (resistances)each connecting two nodes
 S.nse=length(S.SE); % number of connections to pressure sources/sinks from single node
@@ -70,15 +70,22 @@ for i= 1:3
     X= [S.SE(i).u(1) S.SE(i).v(1)];
     Y= [S.SE(i).u(2) S.SE(i).v(2)];
     plot(X,Y);
+    Z=S.SE(i).radius; %mar: his changement doesn't work and also plo(X,Y,'LINEWIDTH',Z,'r') it gives me always error and nothing is red also when i do: plot(Z,'r')
+    plot(Z,'linewidth','r');
+    
     hold on ;
 end
+
+
 
 for i= 1:length(S.IE)
     X= [S.IE(i).u(1) S.IE(i).v(1)];
     Y= [S.IE(i).u(2) S.IE(i).v(2)];
     plot(X,Y);
+
     hold on ;
 end
+
 
     
     
