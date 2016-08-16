@@ -3,7 +3,7 @@ function structurerandom(x1,x2,y1,y2)
 global S
 
 totalarea = abs(x1-x2)*abs(y1-y2); % total area in mm^2 (testconfiguratie)
-nie = length(S.IE); %number of interal elements in configuration
+nie = length(S.IE); %number of internal elements in configuration
 nse = length(S.SE); %number of source elements in configuration
 counterie=1; %counter for every extra internal element made with this algorithm
 a = size(S.matrix);
@@ -16,10 +16,11 @@ S.density = 1/100; %density of number of terminal segments/mm^2
 radius = 0.4; %radius terminale segmenten in mm
 % pressure = 20; %pressure in terminal segments in mmHg
 
+%% for source element
 for i=1:nse 
     segment=[]; %delete any existing fields from previous simulation
     Aperfusion = (sum(S.matrix(:)==i)/numberofpositions)*totalarea; %area perfused by element in mm^2
-    Nterm = round(Aperfusion*S.density); %number of terminal segments made
+    Nterm = round(Aperfusion*S.density/2); %number of terminal segments made
     Ntot = Nterm*2 - 1; %total number of extra segments made
     
     segment(1).u(1) = S.SE(i).u(1)+(S.SE(i).v(1)-S.SE(i).u(1))/3; %coordinates of proximal end of first random element
@@ -43,7 +44,7 @@ for i=1:nse
         S.SE(i).length = lengte(S.SE(i).u,S.SE(i).v);
         
         cubed(1:Nterm) = radius^3; %determining radius extra element using murray's law: r0^3 = r1^3+r2^3
-        S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3 - sum(cubed))^(1/3); 
+%         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3 - sum(cubed))^(1/3); 
         %har: I think instead of using Nterm (number of extra segments
         %generated for one perfusion area), It's better to consider
         %pre-defined radius of the next element as 1 constant in murray's
@@ -69,7 +70,7 @@ for i=1:nse
         %r0^3 = r1^3+r2^3 
         cubed=0;
         cubed(1:Nterm) = radius^3;
-        S.SE(i).radius = (S.SE(i).radius^3 - sum(cubed))^(1/3);
+%         S.SE(i).radius = (S.SE(i).radius^3 - sum(cubed))^(1/3);
         %har: see my note above about murray's law
         
     end
@@ -190,11 +191,10 @@ for i=1:nse
         end
     end
     
-    
-    %new random segments on the other side of element
+    %% New random segments on the other side of element
     segment=[];
     Aperfusion = (sum(S.matrix(:)==i*1.01)/numberofpositions)*totalarea; %area perfused by element in mm^2
-    Nterm = round(Aperfusion*S.density); %aantal terminale segmenten
+    Nterm = round(Aperfusion*S.density/2); %aantal terminale segmenten
     Ntot = Nterm*2 - 1; %totaal aantal segmenten
     
     if S.SE(i).sourceP == 60
@@ -218,7 +218,7 @@ for i=1:nse
         %bepaling nieuwe radius dochterelement
         cubed=0;
         cubed(1:Nterm) = radius^3;
-        S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+%         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
         counterie=counterie+1;
     elseif S.SE(i).sourceP == 40
         segment(1).u(1) = (S.SE(i).u(1)+S.SE(i).v(1))/2;
@@ -352,12 +352,12 @@ for i=1:nse
 end
 
 
-%same algorithm for all internal elements
+%% internal elements
 for i=1:nie
     if i+nse~=5
         segment=[];
         Aperfusion = (sum(S.matrix(:)==i+nse)/numberofpositions)*totalarea; %area perfused by element in mm^2
-        Nterm = round(Aperfusion*S.density); %aantal terminale segmenten
+        Nterm = round(Aperfusion*S.density/2); %aantal terminale segmenten
         Ntot = Nterm*2 - 1; %totaal aantal segmenten
         
         segment(1).u(1) = S.IE(i).u(1)+(S.IE(i).v(1)-S.IE(i).u(1))/3;
@@ -382,7 +382,7 @@ for i=1:nie
         %bepaling nieuwe radius dochterelement
         cubed=0;
         cubed(1:Nterm) = radius^3;
-        S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+%         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
         counterie=counterie+1;
         
         x=round(rand*nx);
@@ -499,10 +499,10 @@ for i=1:nie
         end
     end
     
-    %new random segments on the other side of element
+    %% New random segments on the other side of element
     segment=[];
     Aperfusion = (sum(S.matrix(:)==(i+nse)*1.01)/numberofpositions)*totalarea; %area perfused by element in mm^2
-    Nterm = round(Aperfusion*S.density); %aantal terminale segmenten
+    Nterm = round(Aperfusion*S.density/2); %aantal terminale segmenten
     Ntot = Nterm*2 - 1; %totaal aantal segmenten
     
     segment(1).u(1) = (S.IE(daughter).u(1)+S.IE(daughter).v(1))/2;
@@ -524,7 +524,7 @@ for i=1:nie
  
     cubed=0;
     cubed(1:Nterm) = radius^3;
-    S.IE(counterie+nie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+%     S.IE(counterie+nie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
     counterie=counterie+1;
 
     x=round(rand*nx);
