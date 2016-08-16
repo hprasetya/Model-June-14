@@ -43,11 +43,20 @@ for i=1:nse
         S.SE(i).length = lengte(S.SE(i).u,S.SE(i).v);
         
         cubed(1:Nterm) = radius^3; %determining radius extra element using murray's law: r0^3 = r1^3+r2^3
-        S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3 - sum(cubed))^(1/3); 
+        S.IE(nie+counterie).radius = real(S.IE(nie+counterie).radius^3 - sum(cubed))^(1/3);
         %har: I think instead of using Nterm (number of extra segments
         %generated for one perfusion area), It's better to consider
         %pre-defined radius of the next element as 1 constant in murray's
         %law
+        
+         %mar:about problem radius like a complex number,i have tried to tidy up with"real" everytime there is sum(cubed))^(1/3) but things don't change( see S.IE(152,346,638)).
+         %about the decreasing of radius I have read your sentence A LOT OF TIMES but I continue not to understand how to put  S.IE(nie+counterie).radius like a costant in the murray low. 
+         %Instead of this,i have tried to limit Nterm,i've run a lot of times putting Nterm=2 or Nterm=4 or Nterm=50 eccecc ( in every sentence of the coat when i is writtent "Nterm = round(Aperfusion*S.density);)
+         %to understand what would happens but I didn't unerstand nothing because everytime it says:
+        
+         % "Operation terminated by user during projection (line 33)
+         %In structurerandom (line 564)
+                %succes = projection(dthresh,x,y,segment);"
         
     elseif S.SE(i).sourceP == 40
         S.IE(nie+counterie).nodes = [S.SE(i).node S.nin+1];
@@ -69,7 +78,7 @@ for i=1:nse
         %r0^3 = r1^3+r2^3 
         cubed=0;
         cubed(1:Nterm) = radius^3;
-        S.SE(i).radius = (S.SE(i).radius^3 - sum(cubed))^(1/3);
+        S.SE(i).radius = real(S.SE(i).radius^3 - sum(cubed))^(1/3);
         %har: see my note above about murray's law
         
     end
@@ -182,7 +191,7 @@ for i=1:nse
             S.IE(counterie+nie).v = segment(k).v;
             cubed = 0;
             cubed(1:segment(k).ndist) = radius^3;
-            S.IE(counterie+nie).radius = sum(cubed)^(1/3);
+            S.IE(counterie+nie).radius = real(sum(cubed)^(1/3));
             S.IE(counterie+nie).nodes = segment(k).nodes;
             S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
             S.IE(counterie+nie).type = 1;
@@ -218,7 +227,7 @@ for i=1:nse
         %bepaling nieuwe radius dochterelement
         cubed=0;
         cubed(1:Nterm) = radius^3;
-        S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+        S.IE(nie+counterie).radius = real(S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
         counterie=counterie+1;
     elseif S.SE(i).sourceP == 40
         segment(1).u(1) = (S.SE(i).u(1)+S.SE(i).v(1))/2;
@@ -342,7 +351,7 @@ for i=1:nse
             S.IE(counterie+nie).v = segment(k).v;
             cubed = 0;
             cubed(1:segment(k).ndist) = radius^3;
-            S.IE(counterie+nie).radius = sum(cubed)^(1/3);
+            S.IE(counterie+nie).radius = real(sum(cubed)^(1/3));
             S.IE(counterie+nie).nodes = segment(k).nodes;
             S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
             S.IE(counterie+nie).type = 1;
@@ -382,7 +391,7 @@ for i=1:nie
         %bepaling nieuwe radius dochterelement
         cubed=0;
         cubed(1:Nterm) = radius^3;
-        S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+        S.IE(nie+counterie).radius = real(S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
         counterie=counterie+1;
         
         x=round(rand*nx);
@@ -490,7 +499,7 @@ for i=1:nie
                 S.IE(counterie+nie).v = segment(k).v;
                 cubed = 0;
                 cubed(1:segment(k).ndist) = radius^3;
-                S.IE(counterie+nie).radius = sum(cubed)^(1/3);
+                S.IE(counterie+nie).radius = real(sum(cubed)^(1/3));
                 S.IE(counterie+nie).nodes = segment(k).nodes;
                 S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
                 S.IE(counterie+nie).type = 1;
@@ -524,7 +533,7 @@ for i=1:nie
  
     cubed=0;
     cubed(1:Nterm) = radius^3;
-    S.IE(counterie+nie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+    S.IE(counterie+nie).radius = real(S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
     counterie=counterie+1;
 
     x=round(rand*nx);
@@ -631,7 +640,7 @@ for i=1:nie
             S.IE(counterie+nie).v = segment(k).v;
             cubed = 0;
             cubed(1:segment(k).ndist) = radius^3;
-            S.IE(counterie+nie).radius = sum(cubed)^(1/3);
+            S.IE(counterie+nie).radius = real(sum(cubed)^(1/3));
             S.IE(counterie+nie).nodes = segment(k).nodes;
             S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
             S.IE(counterie+nie).type = 1;
@@ -642,4 +651,4 @@ end
 
 
 end
-            
+          
