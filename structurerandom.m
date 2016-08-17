@@ -355,146 +355,148 @@ end
 %% internal elements
 for i=1:nie
     if i+nse~=5
-        segment=[];
-        Aperfusion = (sum(S.matrix(:)==i+nse)/numberofpositions)*totalarea; %area perfused by element in mm^2
-        Nterm = round(Aperfusion*S.density/2); %aantal terminale segmenten
-        Ntot = Nterm*2 - 1; %totaal aantal segmenten
-        
-        segment(1).u(1) = S.IE(i).u(1)+(S.IE(i).v(1)-S.IE(i).u(1))/3;
-        segment(1).u(2) = S.IE(i).u(2)+(S.IE(i).v(2)-S.IE(i).u(2))/3;
-        %splitting original element in half and adding extra node
-        
-        S.IE(nie+counterie).nodes = [S.nin+1 S.IE(i).nodes(2)];
-        S.IE(nie+counterie).u(1) = S.IE(i).u(1)+(S.IE(i).v(1)-S.IE(i).u(1))/3;
-        S.IE(nie+counterie).u(2) = S.IE(i).u(2)+(S.IE(i).v(2)-S.IE(i).u(2))/3;
-        S.IE(nie+counterie).v(1) = S.IE(i).v(1);
-        S.IE(nie+counterie).v(2) = S.IE(i).v(2);
-        S.IE(nie+counterie).type = S.IE(i).type;
-        S.IE(nie+counterie).length = lengte(S.IE(nie+counterie).u,S.IE(nie+counterie).v);
-        S.IE(nie+counterie).radius = S.IE(i).radius;
-        daughter = nie+counterie;
-        
-        S.IE(i).v(1) = S.IE(i).u(1)+(S.IE(i).v(1)-S.IE(i).u(1))/3;
-        S.IE(i).v(2) = S.IE(i).u(2)+(S.IE(i).v(2)-S.IE(i).u(2))/3;
-        S.IE(i).nodes = [S.IE(i).nodes(1) S.nin+1];
-        S.IE(i).length = lengte(S.IE(i).u,S.IE(i).v);
-        
-        %bepaling nieuwe radius dochterelement
-        cubed=0;
-        cubed(1:Nterm) = radius^3;
-%         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
-        counterie=counterie+1;
-        
-        x=round(rand*nx);
-        y=round(rand*ny);
-        while x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+        if i+nse ~=4
+            segment=[];
+            Aperfusion = (sum(S.matrix(:)==i+nse)/numberofpositions)*totalarea; %area perfused by element in mm^2
+            Nterm = round(Aperfusion*S.density/2); %aantal terminale segmenten
+            Ntot = Nterm*2 - 1; %totaal aantal segmenten
+            
+            segment(1).u(1) = S.IE(i).u(1)+(S.IE(i).v(1)-S.IE(i).u(1))/3;
+            segment(1).u(2) = S.IE(i).u(2)+(S.IE(i).v(2)-S.IE(i).u(2))/3;
+            %splitting original element in half and adding extra node
+            
+            S.IE(nie+counterie).nodes = [S.nin+1 S.IE(i).nodes(2)];
+            S.IE(nie+counterie).u(1) = S.IE(i).u(1)+(S.IE(i).v(1)-S.IE(i).u(1))/3;
+            S.IE(nie+counterie).u(2) = S.IE(i).u(2)+(S.IE(i).v(2)-S.IE(i).u(2))/3;
+            S.IE(nie+counterie).v(1) = S.IE(i).v(1);
+            S.IE(nie+counterie).v(2) = S.IE(i).v(2);
+            S.IE(nie+counterie).type = S.IE(i).type;
+            S.IE(nie+counterie).length = lengte(S.IE(nie+counterie).u,S.IE(nie+counterie).v);
+            S.IE(nie+counterie).radius = S.IE(i).radius;
+            daughter = nie+counterie;
+            
+            S.IE(i).v(1) = S.IE(i).u(1)+(S.IE(i).v(1)-S.IE(i).u(1))/3;
+            S.IE(i).v(2) = S.IE(i).u(2)+(S.IE(i).v(2)-S.IE(i).u(2))/3;
+            S.IE(i).nodes = [S.IE(i).nodes(1) S.nin+1];
+            S.IE(i).length = lengte(S.IE(i).u,S.IE(i).v);
+            
+            %bepaling nieuwe radius dochterelement
+            cubed=0;
+            cubed(1:Nterm) = radius^3;
+            %         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+            counterie=counterie+1;
+            
             x=round(rand*nx);
             y=round(rand*ny);
-        end
-        segment(1).v(1) = x1+x*dx;
-        segment(1).v(2) = y1+y*dy;
-        segment(1).length = lengte(segment(1).u,segment(1).v);
-        segment(1).node = S.nin+1;
-        
-        segment(1).nodes = [];
-        segment(1).parent = nan;
-        segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
-        
-        for k=2:Nterm
-            n=length([segment.ndist]);
+            while x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+                x=round(rand*nx);
+                y=round(rand*ny);
+            end
+            segment(1).v(1) = x1+x*dx;
+            segment(1).v(2) = y1+y*dy;
+            segment(1).length = lengte(segment(1).u,segment(1).v);
+            segment(1).node = S.nin+1;
             
-            %inflating the real world parameters (supporting circle)
-            Asupport = (n+1)*Aperfusion/Ntot;
-            rsupport = sqrt(Asupport/pi);
+            segment(1).nodes = [];
+            segment(1).parent = nan;
+            segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
             
-            %adding terminal segment - chosing coordinates
-            flag = 0;
-            for mp=1:10
-                dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1);
-                for Ntoss=1:25
-                    x=round(rand*nx);
-                    y=round(rand*ny);
-                    while  x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+            for k=2:Nterm
+                n=length([segment.ndist]);
+                
+                %inflating the real world parameters (supporting circle)
+                Asupport = (n+1)*Aperfusion/Ntot;
+                rsupport = sqrt(Asupport/pi);
+                
+                %adding terminal segment - chosing coordinates
+                flag = 0;
+                for mp=1:10
+                    dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1);
+                    for Ntoss=1:25
                         x=round(rand*nx);
                         y=round(rand*ny);
+                        while  x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+                            x=round(rand*nx);
+                            y=round(rand*ny);
+                        end
+                        x = x1+x*dx;
+                        y = y1+y*dy;
+                        succes = projection(dthresh,x,y,segment);
+                        if succes(1) == 1
+                            flag=1;
+                            break
+                        end
                     end
-                    x = x1+x*dx;
-                    y = y1+y*dy;
-                    succes = projection(dthresh,x,y,segment);
-                    if succes(1) == 1
-                        flag=1;
+                    if flag == 1
                         break
                     end
                 end
-                if flag == 1
-                    break
+                
+                segment(n+1).u(1) = segment(succes(2)).u(1);
+                segment(n+1).u(2) = segment(succes(2)).u(2);
+                segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
+                segment(n+1).v(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
+                segment(n+1).length = segment(succes(2)).length/2;
+                if length(segment(succes(2)).nodes) == 2
+                    segment(n+1).nodes(1) = segment(succes(2)).nodes(1);
+                else
+                    segment(n+1).nodes(1) = segment(succes(2)).node;
+                end
+                segment(n+1).nodes(2) = S.nin + k;
+                segment(n+1).ndist = segment(succes(2)).ndist+1;
+                segment(n+1).parent = segment(succes(2)).parent;
+                
+                segment(n+2).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
+                segment(n+2).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
+                segment(n+2).v(1) = x;
+                segment(n+2).v(2) = y;
+                segment(n+2).length = lengte(segment(n+2).u, segment(n+2).v);
+                segment(n+2).parent = (n+1);
+                segment(n+2).node = S.nin+k;
+                segment(n+2).ndist = 1;
+                
+                segment(succes(2)).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
+                segment(succes(2)).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
+                segment(succes(2)).length = segment(succes(2)).length/2;
+                segment(succes(2)).parent = (n+1);
+                if length(segment(succes(2)).nodes) == 2
+                    segment(succes(2)).nodes(1) = S.nin+k;
+                else
+                    segment(succes(2)).node = S.nin+k;
+                end
+                
+                %adjusting flow in segments distal to new terminal segment
+                a=segment(n+1).parent;
+                while isnan(a) == 0
+                    segment(a).ndist = segment(a).ndist + 1;
+                    a = segment(a).parent;
                 end
             end
             
-            segment(n+1).u(1) = segment(succes(2)).u(1);
-            segment(n+1).u(2) = segment(succes(2)).u(2);
-            segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
-            segment(n+1).v(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
-            segment(n+1).length = segment(succes(2)).length/2;
-            if length(segment(succes(2)).nodes) == 2
-                segment(n+1).nodes(1) = segment(succes(2)).nodes(1);
-            else
-                segment(n+1).nodes(1) = segment(succes(2)).node;
-            end
-            segment(n+1).nodes(2) = S.nin + k;
-            segment(n+1).ndist = segment(succes(2)).ndist+1;
-            segment(n+1).parent = segment(succes(2)).parent;
-            
-            segment(n+2).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
-            segment(n+2).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
-            segment(n+2).v(1) = x;
-            segment(n+2).v(2) = y;
-            segment(n+2).length = lengte(segment(n+2).u, segment(n+2).v);
-            segment(n+2).parent = (n+1);
-            segment(n+2).node = S.nin+k;
-            segment(n+2).ndist = 1;
-            
-            segment(succes(2)).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
-            segment(succes(2)).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
-            segment(succes(2)).length = segment(succes(2)).length/2;
-            segment(succes(2)).parent = (n+1);
-            if length(segment(succes(2)).nodes) == 2
-                segment(succes(2)).nodes(1) = S.nin+k;
-            else
-                segment(succes(2)).node = S.nin+k;
-            end
-            
-            %adjusting flow in segments distal to new terminal segment
-            a=segment(n+1).parent;
-            while isnan(a) == 0
-                segment(a).ndist = segment(a).ndist + 1;
-                a = segment(a).parent;
-            end
-        end
-        
-        %adding the new segments to the configuration of the system
-        n = length([segment.ndist]);
-        S.nin=S.nin+Nterm;
-        for k=1:n
-            if segment(k).ndist == 1
-                S.nin=S.nin+1;
-                S.IE(counterie+nie).u = segment(k).u;
-                S.IE(counterie+nie).v = segment(k).v;
-                S.IE(counterie+nie).radius = radius;
-                S.IE(counterie+nie).nodes = [segment(k).node S.nin];
-                S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
-                S.IE(counterie+nie).type = 2;
-                counterie=counterie+1;
-            else
-                S.IE(counterie+nie).u = segment(k).u;
-                S.IE(counterie+nie).v = segment(k).v;
-                cubed = 0;
-                cubed(1:segment(k).ndist) = radius^3;
-                S.IE(counterie+nie).radius = sum(cubed)^(1/3);
-                S.IE(counterie+nie).nodes = segment(k).nodes;
-                S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
-                S.IE(counterie+nie).type = 1;
-                counterie=counterie+1;
+            %adding the new segments to the configuration of the system
+            n = length([segment.ndist]);
+            S.nin=S.nin+Nterm;
+            for k=1:n
+                if segment(k).ndist == 1
+                    S.nin=S.nin+1;
+                    S.IE(counterie+nie).u = segment(k).u;
+                    S.IE(counterie+nie).v = segment(k).v;
+                    S.IE(counterie+nie).radius = radius;
+                    S.IE(counterie+nie).nodes = [segment(k).node S.nin];
+                    S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
+                    S.IE(counterie+nie).type = 2;
+                    counterie=counterie+1;
+                else
+                    S.IE(counterie+nie).u = segment(k).u;
+                    S.IE(counterie+nie).v = segment(k).v;
+                    cubed = 0;
+                    cubed(1:segment(k).ndist) = radius^3;
+                    S.IE(counterie+nie).radius = sum(cubed)^(1/3);
+                    S.IE(counterie+nie).nodes = segment(k).nodes;
+                    S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
+                    S.IE(counterie+nie).type = 1;
+                    counterie=counterie+1;
+                end
             end
         end
     end
