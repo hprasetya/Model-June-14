@@ -17,7 +17,7 @@ radius = 0.4; %radius terminale segmenten in mm
 % pressure = 20; %pressure in terminal segments in mmHg
 
 %% for source element
-for i=1:nse 
+for i=1:nse
     segment=[]; %delete any existing fields from previous simulation
     Aperfusion = (sum(S.matrix(:)==i)/numberofpositions)*totalarea; %area perfused by element in mm^2
     Nterm = round(Aperfusion*S.density/2); %number of terminal segments made
@@ -27,7 +27,7 @@ for i=1:nse
     segment(1).u(2) = S.SE(i).u(2)+(S.SE(i).v(2)-S.SE(i).u(2))/3; %coordinates of proximal end of first random element
     
     %splitting original element and adding extra element and extra node
-    if S.SE(i).sourceP == 60 
+    if S.SE(i).sourceP == 60
         S.IE(nie+counterie).nodes = [S.nin+1 S.SE(i).node];
         S.IE(nie+counterie).u(1) = S.SE(i).u(1)+(S.SE(i).v(1)-S.SE(i).u(1))/3; %har: segment(1).u(1)
         S.IE(nie+counterie).u(2) = S.SE(i).u(2)+(S.SE(i).v(2)-S.SE(i).u(2))/3; %segment(1).u(2)
@@ -44,7 +44,7 @@ for i=1:nse
         S.SE(i).length = lengte(S.SE(i).u,S.SE(i).v);
         
         cubed(1:Nterm) = radius^3; %determining radius extra element using murray's law: r0^3 = r1^3+r2^3
-%         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3 - sum(cubed))^(1/3); 
+        %         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3 - sum(cubed))^(1/3);
         %har: I think instead of using Nterm (number of extra segments
         %generated for one perfusion area), It's better to consider
         %pre-defined radius of the next element as 1 constant in murray's
@@ -66,11 +66,11 @@ for i=1:nse
         S.SE(i).node = S.nin+1;
         S.SE(i).length = lengte(S.SE(i).u,S.SE(i).v);
         
-        %determining radius extra element using murray's law: 
-        %r0^3 = r1^3+r2^3 
+        %determining radius extra element using murray's law:
+        %r0^3 = r1^3+r2^3
         cubed=0;
         cubed(1:Nterm) = radius^3;
-%         S.SE(i).radius = (S.SE(i).radius^3 - sum(cubed))^(1/3);
+        %         S.SE(i).radius = (S.SE(i).radius^3 - sum(cubed))^(1/3);
         %har: see my note above about murray's law
         
     end
@@ -92,28 +92,28 @@ for i=1:nse
     segment(1).nodes = [];
     segment(1).parent = nan;
     segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
-
+    
     for k=2:Nterm
         n=length([segment.ndist]); %number of already existing segments
-
-        %create supporting circle 
+        
+        %create supporting circle
         Asupport = (n+1)*Aperfusion/Ntot;
         rsupport = sqrt(Asupport/pi);
-
+        
         %adding terminal segment - chosing coordinates
         flag = 0;
         for mp=1:10
             dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1); %threshold value which favors coordinates with less segments
             for Ntoss=1:25
                 x=round(rand*nx);
-                y=round(rand*ny); 
+                y=round(rand*ny);
                 while  x == 0 || y == 0 || S.matrix(y,x) ~= i
                     x=round(rand*nx);
                     y=round(rand*ny);
                 end
                 x = x1+x*dx;
                 y = y1+y*dy;
-                succes = projection(dthresh,x,y,segment); %determines if x,y is accepted as new coordinates 
+                succes = projection(dthresh,x,y,segment); %determines if x,y is accepted as new coordinates
                 if succes(1) == 1
                     flag=1;
                     break
@@ -137,7 +137,7 @@ for i=1:nse
         segment(n+1).nodes(2) = S.nin + k;
         segment(n+1).ndist = segment(succes(2)).ndist+1;
         segment(n+1).parent = segment(succes(2)).parent;
-
+        
         segment(n+2).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
         segment(n+2).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
         segment(n+2).v(1) = x;
@@ -146,7 +146,7 @@ for i=1:nse
         segment(n+2).parent = (n+1);
         segment(n+2).node = S.nin+k;
         segment(n+2).ndist = 1;
-
+        
         segment(succes(2)).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
         segment(succes(2)).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
         segment(succes(2)).length = segment(succes(2)).length/2;
@@ -156,7 +156,7 @@ for i=1:nse
         else
             segment(succes(2)).node = S.nin+k;
         end
-
+        
         %adjusting number of distal terminal segments up to the root
         a=segment(n+1).parent;
         while isnan(a) == 0
@@ -218,7 +218,7 @@ for i=1:nse
         %bepaling nieuwe radius dochterelement
         cubed=0;
         cubed(1:Nterm) = radius^3;
-%         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+        %         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
         counterie=counterie+1;
     elseif S.SE(i).sourceP == 40
         segment(1).u(1) = (S.SE(i).u(1)+S.SE(i).v(1))/2;
@@ -233,10 +233,10 @@ for i=1:nse
         S.IE(nie+counterie).length = lengte(S.IE(nie+counterie).u,S.IE(nie+counterie).v);
         S.IE(nie+counterie).radius = S.SE(i).radius;
         
-%         S.SE(i) = []; %delete last part of the last element 
+        %         S.SE(i) = []; %delete last part of the last element
         counterie=counterie+1;
     end
-
+    
     x=round(rand*nx);
     y=round(rand*ny);
     while x == 0 || y == 0 || S.matrix(y,x) ~= i*1.01
@@ -251,21 +251,21 @@ for i=1:nse
     segment(1).nodes = [];
     segment(1).parent = nan;
     segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
-
+    
     for k=2:Nterm
         n=length([segment.ndist]);
-
+        
         %inflating the real world parameters (supporting circle)
         Asupport = (n+1)*Aperfusion/Ntot;
         rsupport = sqrt(Asupport/pi);
-
+        
         %adding terminal segment - chosing coordinates
         flag = 0;
         for mp=1:10
             dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1);
             for Ntoss=1:25
                 x=round(rand*nx);
-                y=round(rand*ny); 
+                y=round(rand*ny);
                 while  x == 0 || y == 0 || S.matrix(y,x) ~= i*1.01
                     x=round(rand*nx);
                     y=round(rand*ny);
@@ -282,7 +282,7 @@ for i=1:nse
                 break
             end
         end
-
+        
         segment(n+1).u(1) = segment(succes(2)).u(1);
         segment(n+1).u(2) = segment(succes(2)).u(2);
         segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
@@ -296,7 +296,7 @@ for i=1:nse
         segment(n+1).nodes(2) = S.nin + k;
         segment(n+1).ndist = segment(succes(2)).ndist+1;
         segment(n+1).parent = segment(succes(2)).parent;
-
+        
         segment(n+2).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
         segment(n+2).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
         segment(n+2).v(1) = x;
@@ -305,7 +305,7 @@ for i=1:nse
         segment(n+2).parent = (n+1);
         segment(n+2).node = S.nin+k;
         segment(n+2).ndist = 1;
-
+        
         segment(succes(2)).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
         segment(succes(2)).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
         segment(succes(2)).length = segment(succes(2)).length/2;
@@ -315,7 +315,7 @@ for i=1:nse
         else
             segment(succes(2)).node = S.nin+k;
         end
-
+        
         %adjusting flow in segments distal to new terminal segment
         a=segment(n+1).parent;
         while isnan(a) == 0
@@ -323,7 +323,7 @@ for i=1:nse
             a = segment(a).parent;
         end
     end
-
+    
     %adding the new segments to the configuration of the system
     n = length([segment.ndist]);
     S.nin=S.nin+Nterm;
@@ -382,122 +382,148 @@ for i=1:nie
         %bepaling nieuwe radius dochterelement
         cubed=0;
         cubed(1:Nterm) = radius^3;
-%         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
-        counterie=counterie+1;
-        
-        x=round(rand*nx);
-        y=round(rand*ny);
-        while x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+        %         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+        if i+nse==5 %in my mind in This way i have said him , when u find 5 you go on in the count,putting cunterie=counterie+2, 
+            %but i think that the way i have done is wrong !!! 
+            %i don't understand where i have put this condition" if i+nse==5 counterie=counterie+2".
+%but first of all i don't understand why i have to say him if you find 5 go on ,
+%if at the beginning i have put "if i+nse is not equal to 5" so it would not have to consider number 5 .
+%could you clear my ideas if i is possible thank you so much   
+            counterie= counterie+2;
+            
+        else counterie=counterie+1;
+            
             x=round(rand*nx);
             y=round(rand*ny);
-        end
-        segment(1).v(1) = x1+x*dx;
-        segment(1).v(2) = y1+y*dy;
-        segment(1).length = lengte(segment(1).u,segment(1).v);
-        segment(1).node = S.nin+1;
-        
-        segment(1).nodes = [];
-        segment(1).parent = nan;
-        segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
-        
-        for k=2:Nterm
-            n=length([segment.ndist]);
+            while x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+                x=round(rand*nx);
+                y=round(rand*ny);
+            end
+            segment(1).v(1) = x1+x*dx;
+            segment(1).v(2) = y1+y*dy;
+            segment(1).length = lengte(segment(1).u,segment(1).v);
+            segment(1).node = S.nin+1;
             
-            %inflating the real world parameters (supporting circle)
-            Asupport = (n+1)*Aperfusion/Ntot;
-            rsupport = sqrt(Asupport/pi);
+            segment(1).nodes = [];
+            segment(1).parent = nan;
+            segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
             
-            %adding terminal segment - chosing coordinates
-            flag = 0;
-            for mp=1:10
-                dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1);
-                for Ntoss=1:25
-                    x=round(rand*nx);
-                    y=round(rand*ny);
-                    while  x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+            for k=2:Nterm
+                n=length([segment.ndist]);
+                
+                %inflating the real world parameters (supporting circle)
+                Asupport = (n+1)*Aperfusion/Ntot;
+                rsupport = sqrt(Asupport/pi);
+                
+                %adding terminal segment - chosing coordinates
+                flag = 0;
+                for mp=1:10
+                    dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1);
+                    for Ntoss=1:25
                         x=round(rand*nx);
                         y=round(rand*ny);
+                        while  x == 0 || y == 0 || S.matrix(y,x) ~= i+nse
+                            x=round(rand*nx);
+                            y=round(rand*ny);
+                        end
+                        x = x1+x*dx;
+                        y = y1+y*dy;
+                        succes = projection(dthresh,x,y,segment);
+                        if succes(1) == 1
+                            flag=1;
+                            break
+                        end
                     end
-                    x = x1+x*dx;
-                    y = y1+y*dy;
-                    succes = projection(dthresh,x,y,segment);
-                    if succes(1) == 1
-                        flag=1;
+                    if flag == 1
                         break
                     end
                 end
-                if flag == 1
-                    break
+                
+                segment(n+1).u(1) = segment(succes(2)).u(1);
+                segment(n+1).u(2) = segment(succes(2)).u(2);
+                segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
+                segment(n+1).v(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
+                segment(n+1).length = segment(succes(2)).length/2;
+                if length(segment(succes(2)).nodes) == 2
+                    segment(n+1).nodes(1) = segment(succes(2)).nodes(1);
+                else
+                    segment(n+1).nodes(1) = segment(succes(2)).node;
+                end
+                segment(n+1).nodes(2) = S.nin + k;
+                segment(n+1).ndist = segment(succes(2)).ndist+1;
+                segment(n+1).parent = segment(succes(2)).parent;
+                
+                segment(n+2).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
+                segment(n+2).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
+                segment(n+2).v(1) = x;
+                segment(n+2).v(2) = y;
+                segment(n+2).length = lengte(segment(n+2).u, segment(n+2).v);
+                segment(n+2).parent = (n+1);
+                segment(n+2).node = S.nin+k;
+                segment(n+2).ndist = 1;
+                
+                segment(succes(2)).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
+                segment(succes(2)).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
+                segment(succes(2)).length = segment(succes(2)).length/2;
+                segment(succes(2)).parent = (n+1);
+                if length(segment(succes(2)).nodes) == 2
+                    segment(succes(2)).nodes(1) = S.nin+k;
+                else
+                    segment(succes(2)).node = S.nin+k;
+                end
+                
+                %adjusting flow in segments distal to new terminal segment
+                a=segment(n+1).parent;
+                while isnan(a) == 0
+                    segment(a).ndist = segment(a).ndist + 1;
+                    a = segment(a).parent;
                 end
             end
             
-            segment(n+1).u(1) = segment(succes(2)).u(1);
-            segment(n+1).u(2) = segment(succes(2)).u(2);
-            segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
-            segment(n+1).v(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
-            segment(n+1).length = segment(succes(2)).length/2;
-            if length(segment(succes(2)).nodes) == 2
-                segment(n+1).nodes(1) = segment(succes(2)).nodes(1);
-            else
-                segment(n+1).nodes(1) = segment(succes(2)).node;
-            end
-            segment(n+1).nodes(2) = S.nin + k;
-            segment(n+1).ndist = segment(succes(2)).ndist+1;
-            segment(n+1).parent = segment(succes(2)).parent;
-            
-            segment(n+2).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
-            segment(n+2).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
-            segment(n+2).v(1) = x;
-            segment(n+2).v(2) = y;
-            segment(n+2).length = lengte(segment(n+2).u, segment(n+2).v);
-            segment(n+2).parent = (n+1);
-            segment(n+2).node = S.nin+k;
-            segment(n+2).ndist = 1;
-            
-            segment(succes(2)).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
-            segment(succes(2)).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
-            segment(succes(2)).length = segment(succes(2)).length/2;
-            segment(succes(2)).parent = (n+1);
-            if length(segment(succes(2)).nodes) == 2
-                segment(succes(2)).nodes(1) = S.nin+k;
-            else
-                segment(succes(2)).node = S.nin+k;
-            end
-            
-            %adjusting flow in segments distal to new terminal segment
-            a=segment(n+1).parent;
-            while isnan(a) == 0
-                segment(a).ndist = segment(a).ndist + 1;
-                a = segment(a).parent;
-            end
-        end
-        
-        %adding the new segments to the configuration of the system
-        n = length([segment.ndist]);
-        S.nin=S.nin+Nterm;
-        for k=1:n
-            if segment(k).ndist == 1
-                S.nin=S.nin+1;
-                S.IE(counterie+nie).u = segment(k).u;
-                S.IE(counterie+nie).v = segment(k).v;
-                S.IE(counterie+nie).radius = radius;
-                S.IE(counterie+nie).nodes = [segment(k).node S.nin];
-                S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
-                S.IE(counterie+nie).type = 2;
-                counterie=counterie+1;
-            else
-                S.IE(counterie+nie).u = segment(k).u;
-                S.IE(counterie+nie).v = segment(k).v;
-                cubed = 0;
-                cubed(1:segment(k).ndist) = radius^3;
-                S.IE(counterie+nie).radius = sum(cubed)^(1/3);
-                S.IE(counterie+nie).nodes = segment(k).nodes;
-                S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
-                S.IE(counterie+nie).type = 1;
-                counterie=counterie+1;
+            %adding the new segments to the configuration of the system
+            n = length([segment.ndist]);
+            S.nin=S.nin+Nterm;
+            for k=1:n
+                if segment(k).ndist == 1
+                    S.nin=S.nin+1;
+                    S.IE(counterie+nie).u = segment(k).u;
+                    S.IE(counterie+nie).v = segment(k).v;
+                    S.IE(counterie+nie).radius = radius;
+                    S.IE(counterie+nie).nodes = [segment(k).node S.nin];
+                    S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
+                    S.IE(counterie+nie).type = 2;
+                    if i+nse==5 %in my mind in This way i have said him , when u find 5 you go on in the count,putting cunterie=counterie+2, 
+            %but i think that the way i have done is wrong !!! 
+            %i don't understand where i have put this condition" if i+nse==5 counterie=counterie+2".
+%but first of all i don't understand why i have to say him if you find 5 go on ,
+%if at the beginning i have put "if i+nse is not equal to 5" so it would not have to consider number 5 .
+%could you clear my ideas if i is possible thank you so much   
+                        counterie=counterie+2;
+                        
+                    else
+                        counterie=counterie+1;
+                    else
+                        S.IE(counterie+nie).u = segment(k).u;
+                        S.IE(counterie+nie).v = segment(k).v;
+                        cubed = 0;
+                        cubed(1:segment(k).ndist) = radius^3;
+                        S.IE(counterie+nie).radius = sum(cubed)^(1/3);
+                        S.IE(counterie+nie).nodes = segment(k).nodes;
+                        S.IE(counterie+nie).length = lengte(S.IE(counterie+nie).u,S.IE(counterie+nie).v);
+                        S.IE(counterie+nie).type = 1;
+                        if i+nse==5
+                            counterie=counterie+2;
+                            
+                        else
+                            counterie=counterie+1;
+                            
+                        end
+                    end
+                end
             end
         end
     end
+    
     
     %% New random segments on the other side of element
     segment=[];
@@ -507,7 +533,7 @@ for i=1:nie
     
     segment(1).u(1) = (S.IE(daughter).u(1)+S.IE(daughter).v(1))/2;
     segment(1).u(2) = (S.IE(daughter).u(2)+S.IE(daughter).v(2))/2;
-
+    
     S.IE(nie+counterie).nodes = [S.nin+1 S.IE(daughter).nodes(2)];
     S.IE(nie+counterie).u(1) = (S.IE(daughter).u(1)+S.IE(daughter).v(1))/2;
     S.IE(nie+counterie).u(2) = (S.IE(daughter).u(2)+S.IE(daughter).v(2))/2;
@@ -516,17 +542,17 @@ for i=1:nie
     S.IE(nie+counterie).type = S.IE(daughter).type;
     S.IE(nie+counterie).length = lengte(S.IE(nie+counterie).u,S.IE(nie+counterie).v);
     S.IE(nie+counterie).radius = S.IE(daughter).radius;
-
+    
     S.IE(daughter).nodes(2) = S.nin+1;
     S.IE(daughter).v(1) = (S.IE(daughter).u(1)+S.IE(daughter).v(1))/2;
     S.IE(daughter).v(2) = (S.IE(daughter).u(2)+S.IE(daughter).v(2))/2;
     S.IE(daughter).length = lengte(S.IE(daughter).u,S.IE(daughter).v);
- 
+    
     cubed=0;
     cubed(1:Nterm) = radius^3;
-%     S.IE(counterie+nie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
+    %     S.IE(counterie+nie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
     counterie=counterie+1;
-
+    
     x=round(rand*nx);
     y=round(rand*ny);
     while x == 0 || y == 0 || S.matrix(y,x) ~= (i+nse)*1.01
@@ -540,21 +566,21 @@ for i=1:nie
     segment(1).nodes = [];
     segment(1).parent = nan;
     segment(1).ndist = 1; %number of terminal segments distal to this segment (=1 for terminal segments by definition)
-
+    
     for k=2:Nterm
         n=length([segment.ndist]);
-
+        
         %inflating the real world parameters (supporting circle)
         Asupport = (n+1)*Aperfusion/Ntot;
         rsupport = sqrt(Asupport/pi);
-
+        
         %adding terminal segment - chosing coordinates
         flag = 0;
         for mp=1:10
             dthresh = sqrt(pi*rsupport^2/(k-1))*(-0.1*mp+1.1);
             for Ntoss=1:25
                 x=round(rand*nx);
-                y=round(rand*ny); 
+                y=round(rand*ny);
                 while  x == 0 || y == 0 || S.matrix(y,x) ~= (i+nse)*1.01
                     x=round(rand*nx);
                     y=round(rand*ny);
@@ -571,7 +597,7 @@ for i=1:nie
                 break
             end
         end
-
+        
         segment(n+1).u(1) = segment(succes(2)).u(1);
         segment(n+1).u(2) = segment(succes(2)).u(2);
         segment(n+1).v(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
@@ -585,7 +611,7 @@ for i=1:nie
         segment(n+1).nodes(2) = S.nin + k;
         segment(n+1).ndist = segment(succes(2)).ndist+1;
         segment(n+1).parent = segment(succes(2)).parent;
-
+        
         segment(n+2).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
         segment(n+2).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
         segment(n+2).v(1) = x;
@@ -594,7 +620,7 @@ for i=1:nie
         segment(n+2).parent = (n+1);
         segment(n+2).node = S.nin+k;
         segment(n+2).ndist = 1;
-
+        
         segment(succes(2)).u(1) = (segment(succes(2)).u(1)+segment(succes(2)).v(1))/2;
         segment(succes(2)).u(2) = (segment(succes(2)).u(2)+segment(succes(2)).v(2))/2;
         segment(succes(2)).length = segment(succes(2)).length/2;
@@ -604,7 +630,7 @@ for i=1:nie
         else
             segment(succes(2)).node = S.nin+k;
         end
-
+        
         %adjusting flow in segments distal to new terminal segment
         a=segment(n+1).parent;
         while isnan(a) == 0
@@ -612,7 +638,7 @@ for i=1:nie
             a = segment(a).parent;
         end
     end
-
+    
     %adding the new segments to the configuration of the system
     n = length([segment.ndist]);
     S.nin=S.nin+Nterm;
@@ -642,4 +668,4 @@ end
 
 
 end
-            
+
