@@ -8,6 +8,7 @@ function G=conductance(ri,l)
 global S
 
 
-G=pi*ri^4./(8*S.fluidviscosity*l);
+%G=pi*ri^4./(8*S.fluidviscosity*l);
+G=pi*ri^4./(8*S.bloodviscosity*l); %i have changed viscosity;
 
 end
