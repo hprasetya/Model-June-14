@@ -11,9 +11,9 @@ nin=length(IN); nie=length(IE); nse=length(SE);
 
 A=zeros(nin,nin);
 for j=1:nin
-  for i=1:IN(j).nconnect
-      A(j,IN(j).cn(i))=IE(IN(j).ie(i)).G;
-  end
+    for i=1:IN(j).nconnect
+        A(j,IN(j).cn(i))=IE(IN(j).ie(i)).G;
+    end
 end
 for j=1:nin, A(j,j)=-sum(A(j,:)); end
 
@@ -49,3 +49,12 @@ for i=1:nse
     SE(i).P=0.5*(P1+P2);
 end
 
+%  volume for each vessel  
+global S
+for i=1:S.nie
+    S.IE(i).V= (pi*(S.IE(i).radius)^2*S.IE(i).lenght);
+end
+
+for i=1:S.nse
+    S.SE(i).V=(pi*(S.SE(i).radius)^2*S.SE(i).lenght);
+end
