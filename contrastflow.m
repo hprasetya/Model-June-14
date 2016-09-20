@@ -22,7 +22,10 @@ set(0,'DefaultFigureWindowStyle','docked') % a commando that docks all figures t
 global S    % S is a variable that is used in almost all the scripts and is 
             % used to 'hang' on several variables of the simulation
 S=[];       % delete any existing fields from previous simulation
-S.fluidviscosity = 0.00001;  % fluid viscosity of blood
+S.hematocrit = 0.45 ; %supponing that Ht is 45% of whole blood
+S.plasmaviscosity=(1.3*(10)^-3); %range plasma viscosity[1.1-1.6]cP I've changed it in [Kg/m*s]
+S.bloodviscosity =S.plasmaviscosity*(1+2.5*S.hematocrit);
+%S.fluidviscosity = 0.00001;  % fluid viscosity of blood
 
 
 %% DEFINITION OF THE CONNECTIVITY OF THE MODEL: the element tables  
@@ -38,7 +41,7 @@ S.fluidviscosity = 0.00001;  % fluid viscosity of blood
 % adapt and SE should not contain state variables
 
 % [S.IE, S.SE] = configuration;
-[S.IE, S.SE] = testconfiguration;
+[S.IE, S.SE] = testconfigurationmmgiusto;  %cause of my cnfiguration;
 % [S.IE, S.SE] = testconfiguration2;
 
 
@@ -47,8 +50,9 @@ S.fluidviscosity = 0.00001;  % fluid viscosity of blood
 %first distancematrix(x1,x2,y1,y2) determines for every posistion in a rectangled grid(x1,x2,y1,y2) its nearest element
 %then structurerandom(x1,x2,y1,y2) adds terminal segments with a certain density = number of terminal segments/surface area, radius and pressure.
 
-S.matrix = distancematrix(0,100,0,300); 
-structurerandom(0,100,0,300); 
+S.matrix = distancematrix(0,100,0,502); %cause of new configuration;
+structurerandom(0,100,0,502); 
+
 
 S.nie=length(S.IE); % number of internal elements (resistances)each connecting two nodes
 S.nse=length(S.SE); % number of connections to pressure sources/sinks from single node
