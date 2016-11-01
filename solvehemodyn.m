@@ -50,11 +50,10 @@ for i=1:nse
 end
 
 %  volume for each vessel  
-global S
-for i=1:S.nie
-    S.IE(i).V= (pi*(S.IE(i).radius)^2*S.IE(i).lenght);
+for i=1:nie
+    IE(i).V= (pi*(IE(i).radius)^2*IE(i).length);
 end
 
-for i=1:S.nse
-    S.SE(i).V=(pi*(S.SE(i).radius)^2*S.SE(i).lenght);
+for i=1:nse
+    SE(i).V=(pi*(SE(i).radius)^2*SE(i).length);
 end

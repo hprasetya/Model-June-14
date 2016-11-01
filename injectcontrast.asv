@@ -19,7 +19,7 @@ for i=1:ne
     if S.E(i).type ~= 3
         S.E(i).deltax = S.E(i).length/S.nplaces; %length placestep in every element
         S.E(i).C = zeros(S.ntimes,S.nplaces);
-    elseif S.E(i).type == 3 % pre-allocated array for concentration in microcirculation
+    elseif S.E(i).type == 3 % concetration in microcirculation
         S.E(i).C(S.ntimes,1) = 0;
     end
 end

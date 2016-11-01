@@ -6,7 +6,7 @@ function [IE, SE] = testconfigurationmmgiusto
 
 global S
 
-SE(1).u = [50 502];
+SE(1).u = [50 500];
 SE(1).v = [50 360];
 SE(1).radius = 1.65;
 SE(1).node = 1;

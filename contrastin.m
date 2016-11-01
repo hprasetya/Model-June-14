@@ -35,7 +35,9 @@ elseif n == 2
     else
         bb = [0;1];
     end
-    C = (S.E(X(1)).C(t-1,S.nplaces)*abs(S.E(X(1)).Q)*(a*b) + S.E(X(2)).C(t-1,S.nplaces)*abs(S.E(X(2)).Q)*(aa*bb))/(abs(S.E(X(1)).Q)*(a*b)+abs(S.E(X(2)).Q)*(aa*bb));
+    C = (S.E(X(1)).C(t-1,S.nplaces)*abs(S.E(X(1)).Q)*(a*b) + ...
+        S.E(X(2)).C(t-1,S.nplaces)*abs(S.E(X(2)).Q)*(aa*bb))/...
+        (abs(S.E(X(1)).Q)*(a*b)+abs(S.E(X(2)).Q)*(aa*bb));
 
 elseif n == 3
     if S.E(X(1)).nodes(2) == N
@@ -68,7 +70,58 @@ elseif n == 3
     else
         bbb = [0;1];
     end   
-    C = (S.E(X(1)).C(t-1,S.nplaces)*abs(S.E(X(1)).Q)*(a*b) + S.E(X(2)).C(t-1,S.nplaces)*abs(S.E(X(2)).Q)*(aa*bb)+S.E(X(3)).C(t-1,S.nplaces)*abs(S.E(X(3)).Q)*(aaa*bbb))/(abs(S.E(X(1)).Q)*(a*b)+abs(S.E(X(2)).Q)*(aa*bb)+abs(S.E(X(3)).Q)*(aaa*bbb));
+    C = (S.E(X(1)).C(t-1,S.nplaces)*abs(S.E(X(1)).Q)*(a*b) + ...
+        S.E(X(2)).C(t-1,S.nplaces)*abs(S.E(X(2)).Q)*(aa*bb)+...
+        S.E(X(3)).C(t-1,S.nplaces)*abs(S.E(X(3)).Q)*(aaa*bbb))/...
+        (abs(S.E(X(1)).Q)*(a*b)+abs(S.E(X(2)).Q)*(aa*bb)+abs(S.E(X(3)).Q)*(aaa*bbb));
+    
+elseif n == 4
+    if S.E(X(1)).nodes(2) == N
+        a = [1 0];
+    else
+        a = [0 1];
+    end
+    if S.E(X(1)).Q > 0
+        b = [1;0];
+    else
+        b = [0;1];
+    end
+    if S.E(X(2)).nodes(2) == N
+        aa = [1 0];
+    else
+        aa = [0 1];
+    end
+    if S.E(X(2)).Q > 0
+        bb = [1;0];
+    else
+        bb = [0;1];
+    end    
+    if S.E(X(3)).nodes(2) == N
+        aaa = [1 0];
+    else
+        aaa = [0 1];
+    end
+    if S.E(X(3)).Q > 0
+        bbb = [1;0];
+    else
+        bbb = [0;1];        
+    end   
+    if S.E(X(4)).nodes(2) == N
+        aaaa = [1 0];
+    else
+        aaaa = [0 1];
+    end
+    if S.E(X(4)).Q > 0
+        bbbb = [1;0];
+    else
+        bbbb = [0;1];
+    end
+    C = (S.E(X(1)).C(t-1,S.nplaces)*abs(S.E(X(1)).Q)*(a*b) + ...
+        S.E(X(2)).C(t-1,S.nplaces)*abs(S.E(X(2)).Q)*(aa*bb)+ ...
+        S.E(X(3)).C(t-1,S.nplaces)*abs(S.E(X(3)).Q)*(aaa*bbb)+ ...
+        S.E(X(4)).C(t-1,S.nplaces)*abs(S.E(X(4)).Q)*(aaaa*bbbb))/...
+        (abs(S.E(X(1)).Q)*(a*b)+abs(S.E(X(2)).Q)*(aa*bb)+...
+        abs(S.E(X(3)).Q)*(aaa*bbb)+abs(S.E(X(4)).Q)*(aaaa*bbbb));
     
 end
 

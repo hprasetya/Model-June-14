@@ -6,8 +6,8 @@ cmax = round(S.C0); %maximal concentration to set contrast of the lines drawn
 rmax=max([S.E.radius]); %maximal radius to set linewidth
 maxradius = sqrt(1/(S.density*pi)); %radius of microcirculatory 'boxes'
 scalewidth = 10; % (-)  thickness of the lines
-writerObj = VideoWriter('test.avi');
-open(writerObj);
+% writerObj = VideoWriter('test.avi');
+% open(writerObj);
 
 frames = 1000; %number of frames in the movie (30 frames/second)
 timeperframe = S.ntimes/frames;
@@ -43,13 +43,14 @@ for tt=1:S.ntimes
                     rectangle('Position',pos,'Curvature',[1 1],'EdgeColor',color,'FaceColor',color);
                 end
             end
+            drawnow
         end
-        frame = getframe;
-        writeVideo(writerObj,frame);
+%         frame = getframe;
+%         writeVideo(writerObj,frame);
         clf;
     end
 end
-close(writerObj);
+% close(writerObj);
 
 
 end

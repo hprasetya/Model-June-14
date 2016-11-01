@@ -30,9 +30,6 @@ for i=1:S.nse
     if S.SE(i).sourceP == 60
         S.SE(i+S.nse).sourceP = 0;
     end
-    if S.SE(i).sourceP == 40
-        S.SE(i+S.nse).sourceP = 0;
-    end
     S.SE(i+S.nse).length = S.SE(i).length;
     S.SE(i+S.nse).rc = S.SE(i).rc;
     S.SE(i+S.nse).b = S.SE(i).b;

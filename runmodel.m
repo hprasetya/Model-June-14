@@ -4,7 +4,7 @@ S=[];
 
 S.hematocrit = 0.45 ; %supponing that Ht is 45% of whole blood
 S.plasmaviscosity=(1.3*(10)^-3); %range plasma viscosity[1.1-1.6]cP I've changed it in [Kg/m*s]
-S.bloodviscosity =S.plasmaviscosity*(1+2.5*S.hematocrit);
+S.fluidviscosity =S.plasmaviscosity*(1+2.5*S.hematocrit); 
 
 [S.IE, S.SE] = testconfigurationmmgiusto;
 S.matrix = distancematrix(0,100,0,500);
@@ -53,54 +53,41 @@ calcconductance % In this routine the conductance is calculated
 calccrosssectionalarea;
 calcaveragespeed;
 
+%Plot venous system(IE)
+for i=1:S.nie
+    if S.IE(i).type == 4    
+        X = [S.IE(i).u(1)  S.IE(i).v(1)];
+        Y = [S.IE(i).u(2)  S.IE(i).v(2)];
+        plot(X,Y,'b','linewidth',S.IE(i).radius*3);        
+        hold on ;
+    end
+end
+%Plot venous system(SE)
+for i=1:S.nse
+    if S.SE(i).type == 4       
+        X = [S.SE(i).u(1)  S.SE(i).v(1)];
+        Y = [S.SE(i).u(2)  S.SE(i).v(2)];
+        plot(X,Y,'b','linewidth',S.SE(i).radius*3);       
+        hold on ;
+    end
+end
 
 %Plot arterial system(SE)
 for i= 1:length(S.SE)
-    X= [S.SE(i).u(1) S.SE(i).v(1)];
-    Y= [S.SE(i).u(2) S.SE(i).v(2)];
-    plot(X,Y,'r','linewidth',S.SE(i).radius);
-    
-    hold on ;
+    if S.SE(i).type <3
+        X= [S.SE(i).u(1) S.SE(i).v(1)];
+        Y= [S.SE(i).u(2) S.SE(i).v(2)];
+        plot(X,Y,'r','linewidth',S.SE(i).radius*4);
+        hold on ;
+    end
 end
 %Plot arterial system(IE)
 for i= 1:length(S.IE)
-    
-    if S.IE(i).type ~=3  %cause radius w0uld be p0sitive and radius of type 3 is NAN!
-        
+    if S.IE(i).type <3
         X= [S.IE(i).u(1) S.IE(i).v(1)];
         Y= [S.IE(i).u(2) S.IE(i).v(2)];
-        plot(X,Y,'r','linewidth',S.IE(i).radius);
-        
+        plot(X,Y,'r','linewidth',S.IE(i).radius*4);        
         hold on ;
     end
 end
-
-
-%Plot venous system(IE)
-for i=1:S.nie
-    if S.IE(i).type == 4  && S.IE(i).type ~=3 %same reason above!   %type 4 is venus system!
-        
-        X = [S.IE(i).u(1)  S.IE(i).v(1)];
-        Y = [S.IE(i).u(2)  S.IE(i).v(2)];
-        plot(X,Y,'black','linewidth', S.IE(i).radius);
-        
-        hold on ;
-    end
-end
-
-
-
-%Plot venous system(SE)
-for i=1:S.nse
-    if S.SE(i).type == 4
-        
-        X = [S.SE(i).u(1)  S.SE(i).v(1)];
-        Y = [S.SE(i).u(2)  S.SE(i).v(2)];
-        plot(X,Y,'black','linewidth', S.SE(i).radius);
-        
-        hold on ;
-    end
-    
-    
-end
-axis equal
+axis tight
