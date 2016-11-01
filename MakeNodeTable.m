@@ -15,7 +15,7 @@ nin=max([IE.nodes]);
 
 %no connections at start
 for i=1:nin, 
-    IN(i).nconnect=0;,
+    IN(i).nconnect=0;
     IN(i).nsources=0;
 end;
 
