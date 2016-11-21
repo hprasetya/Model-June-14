@@ -18,6 +18,7 @@ for i=1:nse
         E(i).G = SE(i).G;
         E(i).Q = -SE(i).Q;
         E(i).P = SE(i).P;
+        E(i).V = SE(i).V;
         E(i).CSA = SE(i).CSA;
         E(i).speed = SE(i).speed;
         
