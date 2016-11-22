@@ -27,7 +27,7 @@ for i=1:nse
     segment(1).u(2) = S.SE(i).u(2)+(S.SE(i).v(2)-S.SE(i).u(2))/3; %coordinates of proximal end of first random element
     
     %splitting original element and adding extra element and extra node
-    if S.SE(i).sourceP == 60
+    if S.SE(i).sourceP == 120
         S.IE(nie+counterie).nodes = [S.nin+1 S.SE(i).node];
         S.IE(nie+counterie).u(1) = S.SE(i).u(1)+(S.SE(i).v(1)-S.SE(i).u(1))/3; %har: segment(1).u(1)
         S.IE(nie+counterie).u(2) = S.SE(i).u(2)+(S.SE(i).v(2)-S.SE(i).u(2))/3; %segment(1).u(2)
@@ -50,7 +50,7 @@ for i=1:nse
         %pre-defined radius of the next element as 1 constant in murray's
         %law
         
-    elseif S.SE(i).sourceP == 40
+    elseif S.SE(i).sourceP == 60
         S.IE(nie+counterie).nodes = [S.SE(i).node S.nin+1];
         S.IE(nie+counterie).u(1) = S.SE(i).u(1);
         S.IE(nie+counterie).u(2) = S.SE(i).u(2);
@@ -197,7 +197,7 @@ for i=1:nse
     Nterm = round(Aperfusion*S.density/2); %aantal terminale segmenten
     Ntot = Nterm*2 - 1; %totaal aantal segmenten
     
-    if S.SE(i).sourceP == 60
+    if S.SE(i).sourceP == 120
         segment(1).u(1) = (S.IE(daughter).u(1)+S.IE(daughter).v(1))/2;
         segment(1).u(2) = (S.IE(daughter).u(2)+S.IE(daughter).v(2))/2;
         
@@ -220,7 +220,7 @@ for i=1:nse
         cubed(1:Nterm) = radius^3;
         %         S.IE(nie+counterie).radius = (S.IE(nie+counterie).radius^3-sum(cubed))^(1/3);
         counterie=counterie+1;
-    elseif S.SE(i).sourceP == 40
+    elseif S.SE(i).sourceP == 60
         segment(1).u(1) = (S.SE(i).u(1)+S.SE(i).v(1))/2;
         segment(1).u(2) = (S.SE(i).u(2)+S.SE(i).v(2))/2;
         
