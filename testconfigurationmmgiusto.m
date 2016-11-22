@@ -10,7 +10,7 @@ SE(1).u = [50 500];
 SE(1).v = [50 360];
 SE(1).radius = 1.65;
 SE(1).node = 1;
-SE(1).sourceP = 60;
+SE(1).sourceP = 120;
 SE(1).type = 1;
 
 IE(1).u = [50 360];
@@ -84,14 +84,14 @@ SE(2).u = [35 20];
 SE(2).v = [35 10];
 SE(2).radius = 1.6;
 SE(2).node = 6;
-SE(2).sourceP = 40;
+SE(2).sourceP = 60;
 SE(2).type = 1;
 
 SE(3).u = [70 20];
 SE(3).v = [70 10];
 SE(3).radius = 1.6;
 SE(3).node = 8;
-SE(3).sourceP = 40;
+SE(3).sourceP = 60;
 SE(3).type = 1;
 
 S.nin = max([IE.nodes]); %number of internal nodes
