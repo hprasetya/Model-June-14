@@ -27,11 +27,11 @@ for i=1:S.nse
     S.SE(i+S.nse).u = S.SE(i).v+S.switchcoordinates;
     S.SE(i+S.nse).radius = S.SE(i).radius*increaseradius;
     S.SE(i+S.nse).node = S.SE(i).node+S.nin;
-    if S.SE(i).sourceP == 60
+    if S.SE(i).sourceP == 120
         S.SE(i+S.nse).sourceP = 0;
     end
-    if S.SE(i).sourceP == 40
-        S.SE(i+S.nse).sourceP = 0;
+    if S.SE(i).sourceP == 60
+        S.SE(i+S.nse).sourceP = 60;
     end
     S.SE(i+S.nse).length = S.SE(i).length;
     S.SE(i+S.nse).rc = S.SE(i).rc;
