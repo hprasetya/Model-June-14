@@ -63,9 +63,9 @@ for tt=2:S.ntimes
         end
     end
 end
-
-% plot figure
-S.y=linspace(0,(S.ntimes*S.deltat),S.ntimes);
+% 
+% % plot figure
+% S.y=linspace(0,(S.ntimes*S.deltat),S.ntimes);
 
 end
  

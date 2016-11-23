@@ -52,7 +52,9 @@ calcconductance % In this routine the conductance is calculated
 
 calccrosssectionalarea;
 calcaveragespeed;
-
+%%
+[S.E,S.N] = mix(S.SE,S.IE,S.IN);
+%%
 %Plot venous system(IE)
 for i=1:S.nie
     if S.IE(i).type == 4    
